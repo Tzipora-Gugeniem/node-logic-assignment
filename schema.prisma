@@ -29,6 +29,8 @@ model game{
     id  Int  @id @default(autoincrement())
     name String
     status GameStatus @default(Waiting)
+    //אופציונונלי להגדיר מספר מקסימלי של משתתפים במשחק-עפי החלטת פותח המשחק
+    maxParticipants Int    
     // קשר של אחד לרבים: משחק אחד יכול להכיל הרבה משתתפים
      participants GameParticipant[]
     createdAt DateTime          @default(now())
