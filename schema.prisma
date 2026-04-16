@@ -1,0 +1,49 @@
+//Enums 
+//הגדרת סטטוס משחק
+enum GameStatus {
+  Waiting
+  Started
+  Finished
+}
+//הגדרת תפקיד שחקן
+enum PlayerRole {
+  Admin
+  Player
+  Spectator
+}
+
+//models
+//שחקן
+model user{
+    //מפתח ראשי במספור אוטומטי
+    id  Int  @id @default(autoincrement())
+    email string @unique
+    name  String? 
+  // קשר של אחד לרבים: משתמש יכול להשתתף בהרבה משחקים
+  participations GameParticipant[]
+  createdAt DateTime          @default(now())
+}
+
+//משחק
+model game{
+    id  Int  @id @default(autoincrement())
+    name String
+    status GameStatus @default(Waiting)
+    // קשר של אחד לרבים: משחק אחד יכול להכיל הרבה משתתפים
+     participants GameParticipant[]
+    createdAt DateTime          @default(now())
+}
+
+//משתתף במשחק
+model GameParticipant {
+  id        Int        @id @default(autoincrement())
+  userId    Int
+  gameId    Int
+  score   Int        @default(0)
+  role      PlayerRole @default(Player)
+  joinedAt  DateTime   @default(now())
+  
+  // קשרים
+  user User @relation(fields: [userId], references: [id])
+  game Game @relation(fields: [gameId], references: [id])
+}
