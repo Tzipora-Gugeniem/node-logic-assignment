@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  # שירות מסד הנתונים
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: 0583243441
+      POSTGRES_DB: gamedb
+    ports:
+      - "5432:5432"
+
+  # שירות האפליקציה 
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      # כתובת החיבור למסד הנתונים בתוך הרשת של דוקר
+      DATABASE_URL: "postgresql://user:0583243441@db:5432/gamedb?schema=public"
+    # פקודת ההרצה: קודם מחכים ל-DB, מריצים מיגרציה, ואז מריצים את main.js
+    command: >
+      sh -c "npx prisma migrate dev --name init && node main.js"
