@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: 0583243441
+      POSTGRES_PASSWORD=${DB_PASSWORD}
       POSTGRES_DB: gamedb
     ports:
       - "5432:5432"
