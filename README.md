@@ -1,38 +1,40 @@
 # Node Logic Assignment
+Game Logic Service 
+A robust Node.js backend service demonstrating game management logic, database integration with Prisma ORM, and full containerization.
 
-This repository contains a small Node.js + Prisma example. I inspected the project, fixed several issues, and added this README with run instructions.
+Tech Stack
+Runtime: Node.js (ESM)
 
-What I changed
-- Converted the project to ESM (`type: module` in `package.json`).
-- Added a shared `prismaClient.js` to avoid multiple PrismaClient instances.
-- Fixed `main.js` to call the main function and gracefully disconnect Prisma.
-- Rewrote `game.service.js` as an ESM module and corrected logic/syntax errors.
-- Updated `schema.prisma` to use PascalCase model names (`User`, `Game`) and added a compound unique constraint for `GameParticipant` (`@@unique([userId, gameId])`).
-- Cleaned up the Dockerfile and removed insecure TLS overrides.
-- Added `@prisma/client` to `package.json` dependencies and a `start` script.
+Database: PostgreSQL
 
-Quick start
+ORM: Prisma
 
-1. Install dependencies:
+Infrastructure: Docker & Docker Compose
 
-```bash
+Key Features & Implementation
+Scalable Architecture: Implemented a singleton Prisma client pattern to manage database connections efficiently.
+
+Relational Schema: Designed a PostgreSQL schema with complex constraints, including compound unique keys for participants to prevent duplicate entries.
+
+Modern JavaScript: Fully migrated to ES Modules (ESM) for better performance and syntax standards.
+
+Resilient Logic: Robust game service handling registration, status tracking, and error management.
+
+Dockerized Environment: Production-ready Docker configuration, optimized for quick deployment with automated migrations.
+
+Quick Start
+1. Environment Setup
+Create a .env file based on the provided template:
+
+Code snippet
+DATABASE_URL="postgresql://user:password@db:5432/gamedb?schema=public"
+2. Run with Docker (Recommended)
+Bash
+docker-compose up --build
+This will automatically install dependencies, run migrations, and start the service.
+
+3. Local Development
+Bash
 npm install
-```
-
-2. Generate Prisma client (if you change schema):
-
-```bash
 npx prisma generate
-```
-
-3. Run the app:
-
-```bash
 npm start
-```
-
-Notes
-- If you run in Docker, Dockerfile already runs `npm install` and `npx prisma generate`.
-- The schema model names were changed to PascalCase to match typical Prisma conventions; adjust other code if you used different model names elsewhere.
-
-If you want, I can also run `npm install` and `npx prisma generate` here, or help you update Docker Compose. What would you like next?
