@@ -1,18 +1,24 @@
-# 1. בחירת תמונה של Node.js
-FROM node:18
+FROM node:22-alpine
 
-# 2. יצירת תיקיית עבודה בתוך המכולה
-WORKDIR /usr/src/app
+# 1. התקנת ספריות נדרשות
+RUN apk add --no-cache libc6-compat ca-certificates
 
-# 3. העתקת קבצי הגדרות החבילות והתקנתן
+WORKDIR /app
+
+# 2.
+# אנחנו מגדירים ל-npm להתעלם מאימות ה-SSL כדי שיוכל להוריד חבילות דרך הסינון
+RUN npm config set strict-ssl false
+
+# השורה  עבור פריסמה:
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+# 3. הגדרות ל-npm
+
 COPY package*.json ./
 RUN npm install
 
-# 4. העתקת כל קבצי הפרויקט (כולל תיקיית prisma)
 COPY . .
 
-# 5. יצירת ה-Prisma Client 
+# 4. הרצת הפקודה עם דילוג על אימות תעודה
 RUN npx prisma generate
-
-# 6. הפקודה שתריץ את האפליקציה (נגדיר אותה ב-compose כדי שתחכה ל-DB)
-CMD [ "node", "main.js" ]
+RUN npm config set strict-ssl false
+CMD ["node", "main.js"]

@@ -1,3 +1,14 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 //Enums 
 //הגדרת סטטוס משחק
 enum GameStatus {
@@ -13,39 +24,37 @@ enum PlayerRole {
 }
 
 //models
-//שחקן
-model user{
-    //מפתח ראשי במספור אוטומטי
-    id  Int  @id @default(autoincrement())
-    email string @unique
-    name  String? 
-  // קשר של אחד לרבים: משתמש יכול להשתתף בהרבה משחקים
+// User
+model User {
+  id          Int               @id @default(autoincrement())
+  email       String            @unique
+  name        String?
   participations GameParticipant[]
-  createdAt DateTime          @default(now())
+  createdAt   DateTime          @default(now())
 }
 
-//משחק
-model game{
-    id  Int  @id @default(autoincrement())
-    name String
-    status GameStatus @default(Waiting)
-    //אופציונונלי להגדיר מספר מקסימלי של משתתפים במשחק-עפי החלטת פותח המשחק
-    maxParticipants Int    
-    // קשר של אחד לרבים: משחק אחד יכול להכיל הרבה משתתפים
-     participants GameParticipant[]
-    createdAt DateTime          @default(now())
+// Game
+model Game {
+  id            Int               @id @default(autoincrement())
+  name          String
+  status        GameStatus        @default(Waiting)
+  // optional max participants
+  maxParticipants Int?
+  participants  GameParticipant[]
+  createdAt     DateTime          @default(now())
 }
 
-//משתתף במשחק
+// GameParticipant
 model GameParticipant {
   id        Int        @id @default(autoincrement())
   userId    Int
   gameId    Int
-  score   Int        @default(0)
+  score     Int        @default(0)
   role      PlayerRole @default(Player)
   joinedAt  DateTime   @default(now())
-  
-  // קשרים
+
   user User @relation(fields: [userId], references: [id])
   game Game @relation(fields: [gameId], references: [id])
+
+  @@unique([userId, gameId], name: "userId_gameId")
 }
